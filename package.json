@@ -1,0 +1,24 @@
+{
+  "name": "loop-watch",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sample travel times on Boring Company Loop corridors and control routes.",
+  "type": "module",
+  "scripts": {
+    "sample": "tsx src/sample.ts",
+    "sample:dry": "tsx src/sample.ts --dry-run",
+    "sample:dry-all": "tsx src/sample.ts --dry-run --all",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.81.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
