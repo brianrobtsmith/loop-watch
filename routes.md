@@ -1,0 +1,41 @@
+# Loop Watch routes (Phase 1)
+
+18 one-way origin/destination pairs (12 tunnel / future-tunnel comparisons + 6 rail-section pairs). Coordinates were looked up from OpenStreetMap (Nominatim and Photon) on Monday, Nov 23, 2026 and Wednesday, Nov 25, 2026 (America/New_York). Airport points use the terminal or curb, not the airfield reference point. Two Tropicana Avenue intersections were constructed from independently sourced Tropicana latitudes and Decatur / Rainbow longitudes; see the source notes in `routes.json`. Sampling is origin → destination only, to stay inside TomTom's free monthly routing cap.
+
+Public-facing names are in the **Name** column. Do not describe Orlando routes as "near I-Drive" in posts or other public copy.
+
+## Tunnel Routes vs Road-Only, and Future Tunnel Routes
+
+| ID | Name | City | Type | Origin (lat, lon) | Destination (lat, lon) | Rationale |
+|---|---|---|---|---|---|---|
+| `lv-lvcc-resortsworld` | LVCC to Resorts World | Las Vegas | tunnel | Las Vegas Convention Center<br>36.1310204, -115.1501804 | Resorts World Las Vegas<br>36.1336945, -115.1661576 | Short Loop-served hop from the convention campus to an operating north-Strip station. |
+| `lv-lvcc-westgate` | LVCC to Westgate | Las Vegas | tunnel | Las Vegas Convention Center<br>36.1310204, -115.1501804 | Westgate Las Vegas<br>36.1356551, -115.1513429 | Surface alternative to the operating Westgate connector; a short Paradise Road hop, most useful on convention days. Expect small travel times. |
+| `lv-strip-tropicana-sahara` | South Strip to Sahara | Las Vegas | tunnel | Excalibur (Tropicana and Las Vegas Blvd)<br>36.098873, -115.1756084 | Sahara Las Vegas<br>36.1423481, -115.1569128 | North-south Strip path paralleling operating Loop stations (Encore, Resorts World, Sahara). South end is Excalibur because the Tropicana hotel has been demolished. |
+| `lv-airport-sahara` | Airport to Sahara | Las Vegas | tunnel | Harry Reid International Airport, Terminal 1<br>36.0854771, -115.1498236 | Sahara Las Vegas<br>36.1423481, -115.1569128 | Airport-to-north-Strip trip. The official Vegas Loop page listed Airport T1 as active as of Nov 23, 2026. |
+| `lv-control-rainbow` | Rainbow, Sahara to Flamingo | Las Vegas | road-only | Rainbow Blvd and Sahara Ave<br>36.1443383, -115.2435219 | Rainbow Blvd and Flamingo Rd<br>36.11495, -115.2431 | Comparable north-south arterial west of I-15, not served by Loop. |
+| `lv-control-charleston` | Charleston, Rainbow to Decatur | Las Vegas | road-only | Charleston Blvd and Rainbow Blvd<br>36.1589712, -115.2427809 | Charleston Blvd and Decatur Blvd<br>36.1592602, -115.2064828 | East-west west-valley arterial, a second Vegas control for difference-in-differences. |
+| `nash-bna-broadway` | BNA to Lower Broadway | Nashville | future-tunnel | Nashville International Airport terminal<br>36.1315146, -86.669374 | Ryman Auditorium, Lower Broadway<br>36.1612473, -86.7784951 | Primary Music City Loop market (typically via I-40). Baseline only; the system is still tunneling. |
+| `nash-control-broadway-coolsprings` | Lower Broadway to Cool Springs | Nashville | road-only | Ryman Auditorium, Lower Broadway<br>36.1612473, -86.7784951 | Coolsprings Galleria<br>35.9572905, -86.8135103 | Similar-length downtown-to-activity-center trip via I-65, off the published Loop alignment. |
+| `orl-epic-citywalk` | Epic Universe to CityWalk | Orlando | future-tunnel | Universal Epic Universe (guest arrival)<br>28.4377232, -81.4460217 | Universal CityWalk<br>28.4733226, -81.466124 | Proposed Orlando Loop desire line, via Universal Blvd / Kirkman / Sand Lake. Baseline only; no contract and no Loop yet. |
+| `orl-occo-citywalk` | Convention Center to CityWalk | Orlando | future-tunnel | Orange County Convention Center<br>28.4247237, -81.4691963 | Universal CityWalk<br>28.4733226, -81.466124 | Convention-to-parks surface trip along the tourist corridor. |
+| `orl-mco-citywalk` | MCO to CityWalk | Orlando | future-tunnel | Orlando International Airport, North Terminal<br>28.431332, -81.3062854 | Universal CityWalk<br>28.4733226, -81.466124 | Airport-to-parks trip, the Orlando analog of BNA–Broadway and Airport–Sahara. Baseline only. |
+| `orl-control-winterpark-altamonte` | Winter Park to Altamonte Mall | Orlando | road-only | Winter Park Central Park (Park Avenue)<br>28.5968485, -81.3513698 | Altamonte Mall<br>28.6665592, -81.3774552 | North-metro control corridor, similar suburban / I-4 character, away from the tourist-corridor desire line. |
+
+## Rail Routes vs Road-Only
+
+Rail Routes are road trips that run alongside a rail line people can take instead (Las Vegas Monorail, WeGo Star, SunRail). They are measured the same way as Tunnel Routes: surface travel time, compared with a Road-Only corridor.
+
+| ID | Name | City | Type | Origin (lat, lon) | Destination (lat, lon) | Rationale |
+|---|---|---|---|---|---|---|
+| `lv-rail-sahara-mgm` | SAHARA to MGM Grand (Paradise / Koval) | Las Vegas | rail | Sahara Las Vegas<br>36.1423481, -115.1569128 | MGM Grand, 3799 S Las Vegas Boulevard<br>36.1027891, -115.1694006 | Road trip alongside the Las Vegas Monorail. |
+| `lv-rail-control-tropicana-decatur-rainbow` | Tropicana, Decatur to Rainbow | Las Vegas | road-only | Tropicana Ave and Decatur Blvd<br>36.1009, -115.20787 | Tropicana Ave and Rainbow Blvd<br>36.1009, -115.24301 | East-west west-valley arterial west of the Monorail and Loop. Intersections constructed from Nominatim Tropicana latitude and Decatur / Rainbow longitudes; not the North Las Vegas Tropical / Decatur stop. |
+| `nash-rail-mtjuliet-downtown` | Mt. Juliet to Downtown (I-40) | Nashville | rail | WeGo Star Mt. Juliet Station<br>36.199384, -86.517 | WeGo Star Riverfront Station<br>36.161803, -86.773763 | Road trip alongside the WeGo Star, typically via I-40. |
+| `nash-rail-control-brentwood-downtown` | Brentwood to Downtown (I-65) | Nashville | road-only | Maryland Farms, 5101 Maryland Way, Brentwood<br>36.032016, -86.797395 | Riverfront Station (downtown)<br>36.161803, -86.773763 | Similar-length suburb-to-downtown trip via I-65, off the WeGo Star alignment. Origin is Maryland Farms in Brentwood proper, not Coolsprings Galleria. |
+| `orl-rail-winterpark-church` | Winter Park to Church Street (17-92 / I-4) | Orlando | rail | Winter Park Central Park (Park Avenue)<br>28.5968485, -81.3513698 | SunRail Church Street Station, 99 West South Street<br>28.5399048, -81.3806045 | Road trip alongside SunRail. |
+| `orl-rail-control-ucf-downtown` | UCF to Downtown Orlando | Orlando | road-only | UCF main campus, 4000 Central Florida Boulevard<br>28.599591, -81.1971284 | Orlando City Hall, 400 S Orange Avenue<br>28.5375894, -81.3796974 | East-metro to downtown trip that does not follow the SunRail line. Uses the main campus, not UCF Downtown Campus. Winter Park–Altamonte was rejected as a rail Road-Only because both ends sit on SunRail. |
+
+Machine-readable coordinates and source notes are in `routes.json`.
+
+**Types and roles.** *Tunnel* (`role: treated`) means an operating Loop could already be substituting for the surface trip (Vegas only). *Future Tunnel* (`role: baseline`) means collect now so a future before/after is possible (Nashville and Orlando). *Rail* (`role: treated` in the rail comparison) means a road trip alongside a rail alternative. *Road-Only* (`role: control`) means a comparable corridor the Loop or rail line does not serve, used for difference-in-differences.
+
+**Timezones and rush-hour windows.** Las Vegas: `America/Los_Angeles`, weekdays 6:30–9:30 a.m. and 3:30–6:30 p.m. PT. Nashville: `America/Chicago`, weekdays 7:00–9:30 a.m. and 3:30–6:30 p.m. CT. Orlando: `America/New_York`, weekdays 7:00–9:30 a.m. and 4:00–6:30 p.m. ET. A 15-minute grace after each window end covers a late cron and is not an extra planned sample. Weekends are skipped.

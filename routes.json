@@ -1,0 +1,437 @@
+{
+  "version": 2,
+  "updated": "2026-11-25",
+  "timezone_windows": {
+    "note": "Sampler runs every 30 minutes and only requests routes on local weekdays during that city's AM and PM rush windows (15-minute grace after each window end for a late cron). Weekends are skipped. Inclusive 30-minute slots are used for the monthly call budget; grace slots are not extra planned samples.",
+    "weekdays_only": true,
+    "grace_after_end_minutes": 15,
+    "cities": {
+      "las-vegas": {
+        "timezone": "America/Los_Angeles",
+        "am_local": "06:30",
+        "pm_local": "15:30",
+        "am_end_local": "09:30",
+        "pm_end_local": "18:30",
+        "slots_per_weekday": 14,
+        "sources": "FAST signal timing AM 6:30\u20139:15; PM core within RTC CMP/PHED 3\u20137 p.m. and UCR 4\u20137 p.m. Sampler uses 6:30\u20139:30 a.m. and 3:30\u20136:30 p.m. PT (FAST PM plans can run 2\u20137, which is too wide for a commute sampler)."
+      },
+      "nashville": {
+        "timezone": "America/Chicago",
+        "am_local": "07:00",
+        "am_end_local": "09:30",
+        "pm_local": "15:30",
+        "pm_end_local": "18:30",
+        "slots_per_weekday": 13,
+        "sources": "TDOT Inner Loop PEL / HOV 7\u20139 a.m. and 4\u20136 p.m. Mon\u2013Fri (including I-40 east and I-65 south); ATRI/news I-40 at I-65 backups ~3\u20136 p.m. Sampler uses 7:00\u20139:30 a.m. and 3:30\u20136:30 p.m. CT."
+      },
+      "orlando": {
+        "timezone": "America/New_York",
+        "am_local": "07:00",
+        "am_end_local": "09:30",
+        "pm_local": "16:00",
+        "pm_end_local": "18:30",
+        "slots_per_weekday": 12,
+        "sources": "MetroPlan/City TIA standard 7\u20139 a.m. and 4\u20136 p.m.; MetroPlan Orlando MTP 2050 Ch. 4 (adopted Dec 10, 2025) documents PM spreading to ~4:30\u20136:30. Sampler uses 7:00\u20139:30 a.m. and 4:00\u20136:30 p.m. ET."
+      }
+    }
+  },
+  "coordinate_sources": "OpenStreetMap Nominatim and Photon (Komoot) lookups on 2026-11-23 and 2026-11-25, plus documented RTC bus-stop / venue nodes and two constructed Tropicana Avenue intersections (see those point source notes). Airport terminals use the terminal or curb amenity, not the airfield reference point.",
+  "routes": [
+    {
+      "id": "lv-lvcc-resortsworld",
+      "public_name": "LVCC to Resorts World",
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "treated",
+      "origin": {
+        "name": "Las Vegas Convention Center",
+        "lat": 36.1310204,
+        "lon": -115.1501804,
+        "source": "OSM Nominatim, conference centre at 3150 Paradise Road"
+      },
+      "destination": {
+        "name": "Resorts World Las Vegas",
+        "lat": 36.1336945,
+        "lon": -115.1661576,
+        "source": "OSM Nominatim, casino at 3000 S Las Vegas Boulevard"
+      },
+      "rationale": "Short Loop-served hop from the convention campus to an operating north-Strip Loop station.",
+      "type": "tunnel"
+    },
+    {
+      "id": "lv-lvcc-westgate",
+      "public_name": "LVCC to Westgate",
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "treated",
+      "origin": {
+        "name": "Las Vegas Convention Center",
+        "lat": 36.1310204,
+        "lon": -115.1501804,
+        "source": "OSM Nominatim, conference centre at 3150 Paradise Road"
+      },
+      "destination": {
+        "name": "Westgate Las Vegas Resort & Casino",
+        "lat": 36.1356551,
+        "lon": -115.1513429,
+        "source": "OSM Nominatim / Photon, hotel at 3000 Paradise Road"
+      },
+      "rationale": "Surface alternative to the operating Westgate connector; a short Paradise Road hop, most useful on convention days. Expect small travel times.",
+      "type": "tunnel"
+    },
+    {
+      "id": "lv-strip-tropicana-sahara",
+      "public_name": "South Strip to Sahara",
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "treated",
+      "origin": {
+        "name": "Excalibur (Tropicana and Las Vegas Blvd)",
+        "lat": 36.098873,
+        "lon": -115.1756084,
+        "source": "OSM Photon, Excalibur Hotel & Casino, 3850 S Las Vegas Boulevard \u2014 used as the south-Strip anchor because the Tropicana hotel has been demolished"
+      },
+      "destination": {
+        "name": "Sahara Las Vegas",
+        "lat": 36.1423481,
+        "lon": -115.1569128,
+        "source": "OSM Nominatim, Sahara Las Vegas Hotel & Casino, 2535 S Las Vegas Boulevard"
+      },
+      "rationale": "North-south Strip surface path paralleling operating Loop stations (Encore, Resorts World, Sahara).",
+      "type": "tunnel"
+    },
+    {
+      "id": "lv-airport-sahara",
+      "public_name": "Airport to Sahara",
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "treated",
+      "origin": {
+        "name": "Harry Reid International Airport, Terminal 1",
+        "lat": 36.0854771,
+        "lon": -115.1498236,
+        "source": "OSM Photon, Terminal 1 taxi departures amenity \u2014 landside curb, not the airfield reference point"
+      },
+      "destination": {
+        "name": "Sahara Las Vegas",
+        "lat": 36.1423481,
+        "lon": -115.1569128,
+        "source": "OSM Nominatim, Sahara Las Vegas Hotel & Casino, 2535 S Las Vegas Boulevard"
+      },
+      "rationale": "Airport-to-north-Strip trip. The official Vegas Loop page listed Airport T1 as active as of 2026-11-23, so this is a core substitution market.",
+      "type": "tunnel"
+    },
+    {
+      "id": "lv-control-rainbow",
+      "public_name": "Rainbow, Sahara to Flamingo",
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "control",
+      "origin": {
+        "name": "Rainbow Blvd and Sahara Ave",
+        "lat": 36.1443383,
+        "lon": -115.2435219,
+        "source": "OSM Photon, RTC bus stop 'Westbound Sahara after Rainbow'"
+      },
+      "destination": {
+        "name": "Rainbow Blvd and Flamingo Rd",
+        "lat": 36.11495,
+        "lon": -115.2431,
+        "source": "Intersection constructed from RTC-aligned Rainbow Boulevard centerline (~-115.2431) and Flamingo Road latitude at 6820 S Rainbow (OSM Photon, 36.11495, -115.24113 on the east side of the street)"
+      },
+      "rationale": "Comparable north-south arterial west of I-15, similar length to a mid-valley hop, not served by Loop.",
+      "type": "road-only"
+    },
+    {
+      "id": "lv-control-charleston",
+      "public_name": "Charleston, Rainbow to Decatur",
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "control",
+      "origin": {
+        "name": "Charleston Blvd and Rainbow Blvd",
+        "lat": 36.1589712,
+        "lon": -115.2427809,
+        "source": "OSM Photon, RTC bus stop 'Eastbound Charleston after Rainbow'"
+      },
+      "destination": {
+        "name": "Charleston Blvd and Decatur Blvd",
+        "lat": 36.1592602,
+        "lon": -115.2064828,
+        "source": "OSM Photon, RTC bus stop 'Westbound Charleston after Decatur'"
+      },
+      "rationale": "East-west west-valley arterial, similar urban character, well away from Loop stations; a second Vegas control for difference-in-differences.",
+      "type": "road-only"
+    },
+    {
+      "id": "nash-bna-broadway",
+      "public_name": "BNA to Lower Broadway",
+      "city": "nashville",
+      "city_label": "Nashville",
+      "timezone": "America/Chicago",
+      "role": "baseline",
+      "origin": {
+        "name": "Nashville International Airport terminal",
+        "lat": 36.1315146,
+        "lon": -86.669374,
+        "source": "OSM Photon, aeroway=terminal on Terminal Drive \u2014 not the airfield centroid"
+      },
+      "destination": {
+        "name": "Ryman Auditorium, Lower Broadway",
+        "lat": 36.1612473,
+        "lon": -86.7784951,
+        "source": "OSM Nominatim, Ryman Auditorium on Rep. John Lewis Way North, adjacent to Lower Broadway"
+      },
+      "rationale": "Primary Music City Loop market (airport to Lower Broadway, typically via I-40). Baseline only; the system is still tunneling.",
+      "type": "future-tunnel"
+    },
+    {
+      "id": "nash-control-broadway-coolsprings",
+      "public_name": "Lower Broadway to Cool Springs",
+      "city": "nashville",
+      "city_label": "Nashville",
+      "timezone": "America/Chicago",
+      "role": "control",
+      "origin": {
+        "name": "Ryman Auditorium, Lower Broadway",
+        "lat": 36.1612473,
+        "lon": -86.7784951,
+        "source": "OSM Nominatim, Ryman Auditorium"
+      },
+      "destination": {
+        "name": "Coolsprings Galleria",
+        "lat": 35.9572905,
+        "lon": -86.8135103,
+        "source": "OSM Photon, Coolsprings Galleria, Galleria Boulevard, Franklin, TN"
+      },
+      "rationale": "Similar-length downtown-to-activity-center trip via I-65, off the published Music City Loop alignment.",
+      "type": "road-only"
+    },
+    {
+      "id": "orl-epic-citywalk",
+      "public_name": "Epic Universe to CityWalk",
+      "city": "orlando",
+      "city_label": "Orlando",
+      "timezone": "America/New_York",
+      "role": "baseline",
+      "origin": {
+        "name": "Universal Epic Universe (guest arrival)",
+        "lat": 28.4377232,
+        "lon": -81.4460217,
+        "source": "OSM Nominatim / Photon, bus station / arrival at 6000 Universal Boulevard, rather than the park centroid"
+      },
+      "destination": {
+        "name": "Universal CityWalk Orlando",
+        "lat": 28.4733226,
+        "lon": -81.466124,
+        "source": "OSM Nominatim, CityWalk attraction / IOA entrance"
+      },
+      "rationale": "Proposed Orlando Loop desire line (Epic Universe to CityWalk) on the Universal Blvd / Kirkman / Sand Lake surface path. Baseline only; there is no contract and no Loop yet.",
+      "type": "future-tunnel"
+    },
+    {
+      "id": "orl-occo-citywalk",
+      "public_name": "Convention Center to CityWalk",
+      "city": "orlando",
+      "city_label": "Orlando",
+      "timezone": "America/New_York",
+      "role": "baseline",
+      "origin": {
+        "name": "Orange County Convention Center",
+        "lat": 28.4247237,
+        "lon": -81.4691963,
+        "source": "OSM Nominatim, conference centre at 9800 International Drive (West Building)"
+      },
+      "destination": {
+        "name": "Universal CityWalk Orlando",
+        "lat": 28.4733226,
+        "lon": -81.466124,
+        "source": "OSM Nominatim, CityWalk attraction / IOA entrance"
+      },
+      "rationale": "Convention-to-parks surface trip along the tourist corridor (International Drive / Universal Boulevard). Public name stays 'Convention Center to CityWalk'.",
+      "type": "future-tunnel"
+    },
+    {
+      "id": "orl-mco-citywalk",
+      "public_name": "MCO to CityWalk",
+      "city": "orlando",
+      "city_label": "Orlando",
+      "timezone": "America/New_York",
+      "role": "baseline",
+      "origin": {
+        "name": "Orlando International Airport, North Terminal",
+        "lat": 28.431332,
+        "lon": -81.3062854,
+        "source": "OSM Photon, Hyatt Regency Orlando International Airport at 9300 Jeff Fuqua Boulevard, which sits on the North Terminal (A/B) \u2014 not the airfield centroid or Terminal C"
+      },
+      "destination": {
+        "name": "Universal CityWalk Orlando",
+        "lat": 28.4733226,
+        "lon": -81.466124,
+        "source": "OSM Nominatim, CityWalk attraction / IOA entrance"
+      },
+      "rationale": "Airport-to-parks trip, the Orlando analog of BNA\u2013Broadway and LAS\u2013Strip. Baseline only.",
+      "type": "future-tunnel"
+    },
+    {
+      "id": "orl-control-winterpark-altamonte",
+      "public_name": "Winter Park to Altamonte Mall",
+      "city": "orlando",
+      "city_label": "Orlando",
+      "timezone": "America/New_York",
+      "role": "control",
+      "origin": {
+        "name": "Winter Park Central Park (Park Avenue)",
+        "lat": 28.5968485,
+        "lon": -81.3513698,
+        "source": "OSM Photon, Central Park, Winter Park, at Park Avenue"
+      },
+      "destination": {
+        "name": "Altamonte Mall",
+        "lat": 28.6665592,
+        "lon": -81.3774552,
+        "source": "OSM Nominatim / Photon, Altamonte Mall, 451 E Altamonte Drive (shop=mall node)"
+      },
+      "rationale": "North-metro control corridor (Winter Park to Altamonte Springs), similar suburban / I-4 character and well away from the tourist-corridor desire line.",
+      "type": "road-only"
+    },
+    {
+      "id": "lv-rail-sahara-mgm",
+      "public_name": "SAHARA to MGM Grand (Paradise / Koval)",
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "treated",
+      "type": "rail",
+      "origin": {
+        "name": "Sahara Las Vegas",
+        "lat": 36.1423481,
+        "lon": -115.1569128,
+        "source": "OSM Nominatim, Sahara Las Vegas Hotel & Casino, 2535 S Las Vegas Boulevard"
+      },
+      "destination": {
+        "name": "MGM Grand, 3799 S Las Vegas Boulevard",
+        "lat": 36.1027891,
+        "lon": -115.1694006,
+        "source": "OSM Photon, MGM Grand, 3799 S Las Vegas Boulevard"
+      },
+      "rationale": "Road trip alongside the Las Vegas Monorail (Sahara to MGM Grand via Paradise / Koval), used as a Rail Route in the rail vs road-only comparison."
+    },
+    {
+      "id": "lv-rail-control-tropicana-decatur-rainbow",
+      "public_name": "Tropicana, Decatur to Rainbow",
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "control",
+      "type": "road-only",
+      "origin": {
+        "name": "Tropicana Ave and Decatur Blvd",
+        "lat": 36.1009,
+        "lon": -115.20787,
+        "source": "Intersection constructed from Nominatim West Tropicana Avenue latitude (~36.1009; e.g. 36.1009734, -115.1913267) and Nominatim South Decatur Boulevard longitude near Tropicana (36.0993532, -115.2078663). Do not use the North Las Vegas Tropical / Decatur bus stop (~36.268), which Photon can return for similarly worded queries."
+      },
+      "destination": {
+        "name": "Tropicana Ave and Rainbow Blvd",
+        "lat": 36.1009,
+        "lon": -115.24301,
+        "source": "Intersection constructed from the same West Tropicana Avenue latitude (~36.1009) and Nominatim South Rainbow Boulevard longitude near Tropicana (36.0957854, -115.2430147), consistent with the existing Rainbow centerline used for Rainbow & Flamingo (~-115.2431)."
+      },
+      "rationale": "East-west west-valley arterial on Tropicana, well west of the Monorail and Loop, used as the Las Vegas Road-Only pair for the rail comparison."
+    },
+    {
+      "id": "nash-rail-mtjuliet-downtown",
+      "public_name": "Mt. Juliet to Downtown (I-40)",
+      "city": "nashville",
+      "city_label": "Nashville",
+      "timezone": "America/Chicago",
+      "role": "treated",
+      "type": "rail",
+      "origin": {
+        "name": "WeGo Star Mt. Juliet Station",
+        "lat": 36.199384,
+        "lon": -86.517,
+        "source": "OSM Photon, Mt. Juliet station area on East Division Street"
+      },
+      "destination": {
+        "name": "WeGo Star Riverfront Station",
+        "lat": 36.161803,
+        "lon": -86.773763,
+        "source": "OSM Photon, Riverfront Station, 1st Avenue South, Nashville"
+      },
+      "rationale": "Road trip alongside the WeGo Star (Mt. Juliet to Riverfront, typically via I-40), used as a Rail Route in the rail vs road-only comparison."
+    },
+    {
+      "id": "nash-rail-control-brentwood-downtown",
+      "public_name": "Brentwood to Downtown (I-65)",
+      "city": "nashville",
+      "city_label": "Nashville",
+      "timezone": "America/Chicago",
+      "role": "control",
+      "type": "road-only",
+      "origin": {
+        "name": "Maryland Farms, 5101 Maryland Way, Brentwood",
+        "lat": 36.032016,
+        "lon": -86.797395,
+        "source": "OSM Photon, Maryland Farms YMCA, 5101 Maryland Way, Brentwood \u2014 office-park anchor on the I-65 corridor in Brentwood proper, not Coolsprings Galleria in Franklin"
+      },
+      "destination": {
+        "name": "WeGo Star Riverfront Station (downtown)",
+        "lat": 36.161803,
+        "lon": -86.773763,
+        "source": "OSM Photon, Riverfront Station, 1st Avenue South, Nashville"
+      },
+      "rationale": "Similar-length suburb-to-downtown trip via I-65, off the WeGo Star alignment, used as the Nashville Road-Only pair for the rail comparison."
+    },
+    {
+      "id": "orl-rail-winterpark-church",
+      "public_name": "Winter Park to Church Street (17-92 / I-4)",
+      "city": "orlando",
+      "city_label": "Orlando",
+      "timezone": "America/New_York",
+      "role": "treated",
+      "type": "rail",
+      "origin": {
+        "name": "Winter Park Central Park (Park Avenue)",
+        "lat": 28.5968485,
+        "lon": -81.3513698,
+        "source": "OSM Photon, Central Park, Winter Park, at Park Avenue"
+      },
+      "destination": {
+        "name": "SunRail Church Street Station",
+        "lat": 28.5399048,
+        "lon": -81.3806045,
+        "source": "OSM Nominatim, SunRail Church Street station at 99 West South Street, Orlando (osm_value=station)"
+      },
+      "rationale": "Road trip alongside SunRail (Winter Park to Church Street, typically via 17-92 / I-4), used as a Rail Route in the rail vs road-only comparison."
+    },
+    {
+      "id": "orl-rail-control-ucf-downtown",
+      "public_name": "UCF to Downtown Orlando",
+      "city": "orlando",
+      "city_label": "Orlando",
+      "timezone": "America/New_York",
+      "role": "control",
+      "type": "road-only",
+      "origin": {
+        "name": "University of Central Florida, main campus",
+        "lat": 28.599591,
+        "lon": -81.1971284,
+        "source": "OSM Photon / Nominatim, 4000 Central Florida Boulevard \u2014 the main east-campus, not UCF Downtown Campus (28.5467, -81.3858)"
+      },
+      "destination": {
+        "name": "Orlando City Hall",
+        "lat": 28.5375894,
+        "lon": -81.3796974,
+        "source": "OSM Nominatim, Orlando City Hall, 400 S Orange Avenue"
+      },
+      "rationale": "East-metro to downtown trip that does not follow the SunRail line (Winter Park\u2013Altamonte was rejected as a rail Road-Only because both ends sit on SunRail)."
+    }
+  ]
+}
