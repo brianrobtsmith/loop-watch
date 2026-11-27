@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "updated": "2026-11-25",
+  "version": 4,
+  "updated": "2026-11-27",
   "timezone_windows": {
     "note": "Sampler runs every 30 minutes and only requests routes on local weekdays during that city's AM and PM rush windows (15-minute grace after each window end for a late cron). Weekends are skipped. Inclusive 30-minute slots are used for the monthly call budget; grace slots are not extra planned samples.",
     "weekdays_only": true,
@@ -432,6 +432,154 @@
         "source": "OSM Nominatim, Orlando City Hall, 400 S Orange Avenue"
       },
       "rationale": "East-metro to downtown trip that does not follow the SunRail line (Winter Park\u2013Altamonte was rejected as a rail Road-Only because both ends sit on SunRail)."
+    },
+    {
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "baseline",
+      "type": "future-tunnel",
+      "id": "lv-westgate-airport",
+      "public_name": "Westgate to Airport (fastest)",
+      "origin": {
+        "name": "Westgate Las Vegas Resort & Casino",
+        "lat": 36.1356551,
+        "lon": -115.1513429,
+        "source": "OSM Nominatim / Photon, hotel at 3000 Paradise Road"
+      },
+      "destination": {
+        "name": "Harry Reid International Airport, Terminal 1",
+        "lat": 36.0854771,
+        "lon": -115.1498236,
+        "source": "OSM Photon, Terminal 1 taxi departures amenity \u2014 landside curb, not the airfield reference point"
+      },
+      "rationale": "Surface trip from Westgate to Harry Reid Terminal 1 on TomTom's fastest route (which may use I-15 or Swenson). Baseline for the Westgate\u2013Paradise\u2013airport twin-tunnel segment, which is not yet open to the public. Sampled southbound so it can be compared with the same trip once the tunnels open."
+    },
+    {
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "baseline",
+      "type": "future-tunnel",
+      "id": "lv-airport-westgate",
+      "public_name": "Airport to Westgate (fastest)",
+      "origin": {
+        "name": "Harry Reid International Airport, Terminal 1",
+        "lat": 36.0854771,
+        "lon": -115.1498236,
+        "source": "OSM Photon, Terminal 1 taxi departures amenity \u2014 landside curb, not the airfield reference point"
+      },
+      "destination": {
+        "name": "Westgate Las Vegas Resort & Casino",
+        "lat": 36.1356551,
+        "lon": -115.1513429,
+        "source": "OSM Nominatim / Photon, hotel at 3000 Paradise Road"
+      },
+      "rationale": "Reverse of Westgate to Airport (fastest). Both directions are sampled because the comparison is transit time on the same desire line, not a one-way commute count."
+    },
+    {
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "baseline",
+      "type": "future-tunnel",
+      "id": "lv-westgate-airport-paradise",
+      "public_name": "Westgate to Airport (via Paradise Road)",
+      "origin": {
+        "name": "Westgate Las Vegas Resort & Casino",
+        "lat": 36.1356551,
+        "lon": -115.1513429,
+        "source": "OSM Nominatim / Photon, hotel at 3000 Paradise Road"
+      },
+      "destination": {
+        "name": "Harry Reid International Airport, Terminal 1",
+        "lat": 36.0854771,
+        "lon": -115.1498236,
+        "source": "OSM Photon, Terminal 1 taxi departures amenity \u2014 landside curb, not the airfield reference point"
+      },
+      "waypoints": [
+        {
+          "name": "Paradise Road at Thomas & Mack latitude",
+          "lat": 36.104923,
+          "lon": -115.15393,
+          "source": "Constructed Paradise Road point at the OSM Photon Thomas & Mack Center latitude (36.104923, stadium at 4505 S Maryland Parkway, lon -115.1442662). Longitude interpolated along Paradise Road from Westgate, 3000 Paradise (36.1356551, -115.1513429) through Virgin Hotels, 4455 Paradise (OSM Photon 36.1096227, -115.1535362). The arena coordinates themselves are not used, because they sit on Maryland Parkway, east of the Paradise corridor the new tunnels parallel."
+        }
+      ],
+      "rationale": "Same Westgate\u2013Airport trip, forced via Paradise Road at Thomas & Mack latitude so the sample follows the street the new twin tunnels parallel, rather than TomTom's fastest path (which may use I-15 or Swenson)."
+    },
+    {
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "baseline",
+      "type": "future-tunnel",
+      "id": "lv-airport-westgate-paradise",
+      "public_name": "Airport to Westgate (via Paradise Road)",
+      "origin": {
+        "name": "Harry Reid International Airport, Terminal 1",
+        "lat": 36.0854771,
+        "lon": -115.1498236,
+        "source": "OSM Photon, Terminal 1 taxi departures amenity \u2014 landside curb, not the airfield reference point"
+      },
+      "destination": {
+        "name": "Westgate Las Vegas Resort & Casino",
+        "lat": 36.1356551,
+        "lon": -115.1513429,
+        "source": "OSM Nominatim / Photon, hotel at 3000 Paradise Road"
+      },
+      "waypoints": [
+        {
+          "name": "Paradise Road at Thomas & Mack latitude",
+          "lat": 36.104923,
+          "lon": -115.15393,
+          "source": "Constructed Paradise Road point at the OSM Photon Thomas & Mack Center latitude (36.104923, stadium at 4505 S Maryland Parkway, lon -115.1442662). Longitude interpolated along Paradise Road from Westgate, 3000 Paradise (36.1356551, -115.1513429) through Virgin Hotels, 4455 Paradise (OSM Photon 36.1096227, -115.1535362). The arena coordinates themselves are not used, because they sit on Maryland Parkway, east of the Paradise corridor the new tunnels parallel."
+        }
+      ],
+      "rationale": "Reverse of Westgate to Airport (via Paradise Road). Times the Paradise Road corridor in the northbound direction."
+    },
+    {
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "baseline",
+      "type": "future-tunnel",
+      "id": "lv-paradise4744-airport",
+      "public_name": "4744 Paradise Road to Airport T1",
+      "origin": {
+        "name": "4744 Paradise Road",
+        "lat": 36.103659,
+        "lon": -115.1505898,
+        "source": "OSM Nominatim search, 2026-11-27, query '4744 Paradise Road, 89169': display name '4744, Paradise Road, Midtown UNLV, Paradise, Clark County, Nevada, 89169' at 36.1036590, -115.1505898. Nominatim interpolates that house number onto Paradise Road way 601668291 (highway=primary; the way itself has no addr:housenumber or building tag). A Nominatim query without postcode 89169 resolved to downtown Paradise Road segments near 36.14 and is not used."
+      },
+      "destination": {
+        "name": "Harry Reid International Airport, Terminal 1",
+        "lat": 36.0854771,
+        "lon": -115.1498236,
+        "source": "OSM Photon, Terminal 1 taxi departures amenity \u2014 landside curb, not the airfield reference point"
+      },
+      "rationale": "Surface remainder of the Phase 2 Westgate-to-airport trip, as described by Steve Davis to the Las Vegas Review-Journal on January 9, 2026: after the planned station at 4744 Paradise Road, vehicles would still travel above ground to the airport. Times the 4744 Paradise Road to Terminal 1 landside hop so a labeled door-to-door tunnel model can add a measured surface leg. The new tunnels are not yet open to the public."
+    },
+    {
+      "city": "las-vegas",
+      "city_label": "Las Vegas",
+      "timezone": "America/Los_Angeles",
+      "role": "baseline",
+      "type": "future-tunnel",
+      "id": "lv-airport-paradise4744",
+      "public_name": "Airport T1 to 4744 Paradise Road",
+      "origin": {
+        "name": "Harry Reid International Airport, Terminal 1",
+        "lat": 36.0854771,
+        "lon": -115.1498236,
+        "source": "OSM Photon, Terminal 1 taxi departures amenity \u2014 landside curb, not the airfield reference point"
+      },
+      "destination": {
+        "name": "4744 Paradise Road",
+        "lat": 36.103659,
+        "lon": -115.1505898,
+        "source": "OSM Nominatim search, 2026-11-27, query '4744 Paradise Road, 89169': display name '4744, Paradise Road, Midtown UNLV, Paradise, Clark County, Nevada, 89169' at 36.1036590, -115.1505898. Nominatim interpolates that house number onto Paradise Road way 601668291 (highway=primary; the way itself has no addr:housenumber or building tag). A Nominatim query without postcode 89169 resolved to downtown Paradise Road segments near 36.14 and is not used."
+      },
+      "rationale": "Reverse of 4744 Paradise Road to Airport T1. Times the northbound surface remainder of the Phase 2 hybrid trip."
     }
   ]
 }

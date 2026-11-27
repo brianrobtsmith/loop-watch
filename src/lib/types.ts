@@ -19,6 +19,7 @@ export interface Route {
   type: RouteType;
   origin: Point;
   destination: Point;
+  waypoints?: Point[];
   rationale: string;
 }
 
@@ -41,4 +42,5 @@ export interface CliOptions {
   dryRun: boolean;
   all: boolean;
   printOnly: boolean;
+  ids: string[];
 }

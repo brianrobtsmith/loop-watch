@@ -11,11 +11,30 @@ import {
   windowLabel,
 } from "./lib/window.ts";
 
+function parseIds(argv: string[]): string[] {
+  const ids: string[] = [];
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (arg === "--ids") {
+      const next = argv[i + 1];
+      if (next && !next.startsWith("--")) {
+        ids.push(...next.split(",").map((id) => id.trim()).filter(Boolean));
+      }
+      continue;
+    }
+    if (typeof arg === "string" && arg.startsWith("--ids=")) {
+      ids.push(...arg.slice("--ids=".length).split(",").map((id) => id.trim()).filter(Boolean));
+    }
+  }
+  return ids;
+}
+
 function parseArgs(argv: string[]): CliOptions {
   return {
     dryRun: argv.includes("--dry-run"),
     all: argv.includes("--all"),
     printOnly: argv.includes("--print-only"),
+    ids: parseIds(argv),
   };
 }
 
@@ -40,6 +59,14 @@ function loadEnvFile(): void {
 }
 
 function selectRoutes(routes: Route[], options: CliOptions, at: Date): Route[] {
+  if (options.ids.length > 0) {
+    const byId = new Map(routes.map((route) => [route.id, route]));
+    const missing = options.ids.filter((id) => !byId.has(id));
+    if (missing.length > 0) {
+      throw new Error(`Unknown route id(s): ${missing.join(", ")}`);
+    }
+    return options.ids.map((id) => byId.get(id)!);
+  }
   if (options.all) return routes;
   return routes.filter((route) =>
     isWithinSampleWindow(route.city, route.timezone, at),
@@ -66,8 +93,16 @@ function printPlan(routes: Route[], skipped: Route[], at: Date): void {
   for (const route of routes) {
     console.log(`  ${route.id}`);
     console.log(`    ${route.public_name} [${route.type} / ${route.role}]`);
+    const via =
+      route.waypoints && route.waypoints.length > 0
+        ? route.waypoints
+            .map((point) => `${point.lat},${point.lon}`)
+            .join(" via ")
+        : null;
     console.log(
-      `    ${route.origin.lat},${route.origin.lon} -> ${route.destination.lat},${route.destination.lon}`,
+      via
+        ? `    ${route.origin.lat},${route.origin.lon} via ${via} -> ${route.destination.lat},${route.destination.lon}`
+        : `    ${route.origin.lat},${route.origin.lon} -> ${route.destination.lat},${route.destination.lon}`,
     );
     console.log(
       `    local ${formatLocalTime(route.timezone, at)} (samples ${windowLabel(route.city)})`,

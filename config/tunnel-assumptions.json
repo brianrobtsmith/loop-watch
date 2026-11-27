@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "updated": "2026-11-27",
+  "label": "Assumptions, not measurements. These cases are publishable working assumptions for an in-vehicle Westgate\u2013Airport comparison until timed rides exist in ride_logs. They are not observed Loop trip times.",
+  "comparison": "in-vehicle only",
+  "exclusion_note": "Waiting for a ride and boarding are excluded on both sides.",
+  "segment": {
+    "name": "Westgate Las Vegas to 4744 Paradise Road, then surface to Harry Reid International Airport Terminal 1",
+    "tunnel_distance_mi": 2.3,
+    "tunnel_distance_note": "The Boring Company's November 25, 2026 post describes 2.3 miles starting at the Westgate Resort and ending across from UNLV's Thomas & Mack Center (and then to the airport). Steve Davis told the Las Vegas Review-Journal on January 9, 2026 that the under-construction segment was a 2.2-mile dual-direction tunnel from Westgate to a station planned at 4744 Paradise Road. The cases below use 2.3 miles so the Low running time matches 2.3 mi / 60 mph. The 2.2-mile figure is cited, not discarded."
+  },
+  "cases": {
+    "low": {
+      "in_tunnel_run_min": 2.3,
+      "in_tunnel_run_basis": "2.3 miles at the planned 60 mph University Center Loop speed limit (Steve Davis to the Las Vegas Review-Journal, January 9, 2026). Arithmetic: 2.3 / 60 hours = 2.3 minutes. This assumes travel at the planned limit for the whole distance. Acceleration and deceleration are not published."
+    },
+    "mid": {
+      "in_tunnel_run_min": 3.0,
+      "in_tunnel_run_basis": "The 2.3-minute limit-speed running time plus about 40 seconds of acceleration and deceleration. The 40-second allowance is an assumption; acceleration and deceleration times are not published."
+    },
+    "high": {
+      "in_tunnel_run_min": 4.0,
+      "in_tunnel_run_basis": "2.3 miles at the 35 mph operating limit Davis said applies to the existing convention-center, Encore, Resorts World, and Westgate portions (Las Vegas Review-Journal, January 9, 2026). Arithmetic: 2.3 / 35 hours \u2248 3.9 minutes, rounded to 4.0 minutes in this case."
+    }
+  },
+  "surface_leg": {
+    "route_ids": [
+      "lv-paradise4744-airport",
+      "lv-airport-paradise4744"
+    ],
+    "note": "Under the January 2026 Phase 2 description, the trip from 4744 Paradise Road to the airport is still an above-ground leg until a later on-airport station exists. The in-vehicle comparison adds a live TomTom sample from these routes to the assumed in-tunnel run. Do not invent a surface-leg time."
+  },
+  "in_vehicle": {
+    "formula": "T_in_vehicle = T_run + T_surface_remainder",
+    "compared_to_route_ids": [
+      "lv-westgate-airport",
+      "lv-airport-westgate",
+      "lv-westgate-airport-paradise",
+      "lv-airport-westgate-paradise"
+    ],
+    "note": "Waiting for a ride and boarding are excluded on both sides. The 2 to 8 minute company-published range on the official Vegas Loop project page is a system-wide range, not a measured Westgate-to-airport time, and is not used as an input to these cases."
+  },
+  "sources": [
+    {
+      "title": "Boring Co.'s Vegas Loop's future build detailed by company president",
+      "publisher": "Las Vegas Review-Journal",
+      "date": "2026-01-09",
+      "url": "https://www.reviewjournal.com/local/traffic/boring-co-s-vegas-loops-future-build-detailed-by-company-president-3605797/"
+    },
+    {
+      "title": "The Boring Company post on the 2.3-mile Westgate to Thomas & Mack tunnels",
+      "publisher": "The Boring Company / X",
+      "date": "2026-11-25",
+      "url": "https://x.com/boringcompany/status/2125742541253300563"
+    },
+    {
+      "title": "Vegas Loop project page",
+      "publisher": "The Boring Company",
+      "url": "https://boringcompany.com/projects/las-vegas-loop"
+    }
+  ]
+}

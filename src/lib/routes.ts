@@ -38,8 +38,15 @@ function isRoute(value: unknown): value is Route {
     TYPES.has(route.type) &&
     isPoint(route.origin) &&
     isPoint(route.destination) &&
+    isOptionalWaypointList(route.waypoints) &&
     typeof route.rationale === "string"
   );
+}
+
+function isOptionalWaypointList(value: unknown): boolean {
+  if (value === undefined) return true;
+  if (!Array.isArray(value) || value.length === 0) return false;
+  return value.every(isPoint);
 }
 
 export function loadRoutes(path?: string): Route[] {

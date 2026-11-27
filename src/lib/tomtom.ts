@@ -16,7 +16,8 @@ interface TomTomResponse {
 }
 
 export function tomtomUrl(route: Route, apiKey: string): string {
-  const locations = `${route.origin.lat},${route.origin.lon}:${route.destination.lat},${route.destination.lon}`;
+  const points = [route.origin, ...(route.waypoints ?? []), route.destination];
+  const locations = points.map((point) => `${point.lat},${point.lon}`).join(":");
   const params = new URLSearchParams({
     key: apiKey,
     traffic: "true",
