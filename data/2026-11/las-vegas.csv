@@ -1,0 +1,5 @@
+route_id,sampled_at_utc,sampled_at_local,travel_time_s,no_traffic_time_s,tti,length_m,route_type
+lv-westgate-airport,2026-11-27T20:25:16.831Z,2026-11-27T12:25:16-08:00,759,661,1.148,6440,future-tunnel
+lv-airport-westgate,2026-11-27T20:25:16.831Z,2026-11-27T12:25:16-08:00,745,642,1.160,7051,future-tunnel
+lv-westgate-airport-paradise,2026-11-27T20:25:16.831Z,2026-11-27T12:25:16-08:00,1177,1049,1.122,9518,future-tunnel
+lv-airport-westgate-paradise,2026-11-27T20:25:16.831Z,2026-11-27T12:25:16-08:00,1241,1114,1.114,9697,future-tunnel

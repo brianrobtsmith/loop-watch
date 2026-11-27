@@ -89,3 +89,47 @@ export function formatLocalTime(timeZone: string, at: Date): string {
     timeZoneName: "short",
   }).format(at);
 }
+
+/** Local calendar month as YYYY-MM, for CSV folder names. */
+export function yearMonth(timeZone: string, at: Date): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+  }).formatToParts(at);
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  if (!year || !month) {
+    throw new Error(`Could not read local year-month for ${timeZone}`);
+  }
+  return `${year}-${month}`;
+}
+
+/** Local timestamp with numeric offset, e.g. 2026-11-27T10:04:05-08:00. */
+export function formatLocalIso(timeZone: string, at: Date): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+    timeZoneName: "longOffset",
+  }).formatToParts(at);
+  const get = (type: Intl.DateTimeFormatPartTypes): string => {
+    const value = parts.find((part) => part.type === type)?.value;
+    if (!value) {
+      throw new Error(`Could not read ${type} for ${timeZone}`);
+    }
+    return value;
+  };
+  const offsetRaw = get("timeZoneName");
+  const match = offsetRaw.match(/([+-])(\d{1,2})(?::?(\d{2}))?/);
+  const sign = match?.[1];
+  const hours = match?.[2];
+  const offset =
+    sign && hours ? `${sign}${hours.padStart(2, "0")}:${match[3] ?? "00"}` : "+00:00";
+  return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}:${get("second")}${offset}`;
+}

@@ -1,3 +1,4 @@
+-- Optional reference only. The default sampler writes public CSV files under data/. This SQL is unused unless you later choose a database.
 -- Manual Loop / surface ride log.
 -- Run this in the Supabase SQL editor after 001_init.sql. This file does not create a project.
 -- Use it to record timed real rides (tunnel or surface) once a segment is open.

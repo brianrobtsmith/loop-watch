@@ -1,3 +1,4 @@
+-- Optional reference only. The default sampler writes public CSV files under data/. This SQL is unused unless you later choose a database.
 -- Loop Watch Phase 1 schema
 -- Run this in the Supabase SQL editor. This file does not create a project.
 

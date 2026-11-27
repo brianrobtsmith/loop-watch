@@ -29,7 +29,7 @@ Do not describe Orlando routes as "near I-Drive" in public copy. Use the public 
   - Nashville: **7:00–9:30 a.m. and 3:30–6:30 p.m. CT** (13 slots/weekday). Sources: TDOT Inner Loop PEL / HOV 7–9 a.m. and 4–6 p.m. Mon–Fri (including I-40 east and I-65 south); ATRI/news I-40 at I-65 backups ~3–6 p.m.
   - Orlando: **7:00–9:30 a.m. and 4:00–6:30 p.m. ET** (12 slots/weekday). Sources: MetroPlan/City TIA standard 7–9 a.m. and 4–6 p.m.; MetroPlan Orlando MTP 2050 Ch. 4 (adopted Dec 10, 2025) documents PM spreading to ~4:30–6:30.
 - **Weekdays only.** Saturday and Sunday are skipped even if the clock falls inside a peak window.
-- The script itself enforces the windows, so a single every-30-minute cron can run 24 hours a day. Routes outside a local weekday rush window are skipped and do not call TomTom.
+- The script itself enforces the windows in each city's local timezone, including daylight-saving changes. The GitHub Actions cron is a UTC envelope that covers both standard and daylight time (see Cron below). Routes outside a local weekday rush window are skipped and do not call TomTom.
 - Most pairs are sampled in one direction, to stay inside the TomTom free tier. The Westgate–Airport future-tunnel pair is sampled in both directions, and a second pair in each direction is forced via Paradise Road (a waypoint at Thomas & Mack latitude) so the street the new tunnels parallel is timed separately from TomTom's fastest route, which may use I-15 or Swenson.
 
 **Tradeoff.** Rush-hour-only collection misses midday and evening event peaks (Vegas convention turnover, Orlando park closing). The free-tier budget after this cut would allow a later event-day mode without leaving the 20,000-call cap; that mode is not enabled now.
@@ -47,40 +47,50 @@ Planned calls use inclusive 30-minute slots and ~22 weekdays/month (a rough work
 
 That is just over the earlier ~7,000 working budget and still well under the 20,000 free cap. The Westgate–Airport fastest and Paradise Road pairs added 4 × 14 × 22 = 1,232 calls versus the previous 5,192 total for 18 routes. The 4744 Paradise Road–Airport surface-leg pair adds another 2 × 14 × 22 = 616, for 7,040. The earlier all-day design for 18 routes was 18 × 32 slots (16 hours × 2) × 30 calendar days = **17,280** calls/month (or 18 × 33 inclusive 06:00–22:00 slots × 30 = **17,820**).
 
-Supabase free tier is enough for this volume. GitHub Actions on a private repo is free at this cadence. There is no dashboard host required in Phase 1.
+Samples are appended to public CSV files in this repo. GitHub Actions at this cadence is within the included minutes of a standard public-repo plan. There is no dashboard host and no database required in Phase 1.
 
-## Setup (when you are ready)
+## Data storage
 
-This repo does not create a TomTom account, a Supabase project, or a hosted cron. You do that once, then the script can run.
+Each successful sample is appended to a public CSV file in this repository: `data/YYYY-MM/<metro>.csv`, where `YYYY-MM` is the metro's local calendar month and `<metro>` is `las-vegas`, `nashville`, or `orlando`. Files are append-only; the header is written once. Columns are `route_id`, `sampled_at_utc`, `sampled_at_local`, `travel_time_s`, `no_traffic_time_s`, `tti`, `length_m`, and `route_type`. See `data/README.md`.
+
+The `sql/` folder is optional reference only, if you later want a database. The default sampler path does not use it.
+
+## Setup
 
 1. **TomTom key.** Create a free developer account at [developer.tomtom.com](https://developer.tomtom.com/) and copy a Routing API key.
-2. **Supabase project.** A new free project named `loop-watch` is the cleanest option, so this data stays separate from other apps. An existing project is fine if you prefer; run the SQL in that project's editor either way. Open the SQL editor and run `sql/001_init.sql`, then `sql/002_ride_logs.sql`. That creates `travel_samples`, the `travel_samples_tti` view (`tti = travel_time_s / no_traffic_time_s`), and `ride_logs` for manually timed Loop or surface rides once a segment is open. This repo does not create the project for you.
-3. Copy `.env.example` to `.env` and set `TOMTOM_API_KEY`, `SUPABASE_URL`, and `SUPABASE_SERVICE_ROLE_KEY`. The service role key is server-side only; do not put it in a browser app or a public repository.
-4. `npm install`
-5. `npm run sample:dry` — prints the planned requests for the current local windows, no key required.
-6. `npm run sample -- --all --dry-run` — prints all 22 routes and ignores the windows, no API call.
-7. `npm run sample -- --ids=lv-westgate-airport,lv-airport-westgate --print-only` — calls TomTom only for the listed route ids, no database write. Do not run a live test unless it has been approved.
-8. `npm run sample -- --all --print-only` — calls TomTom for every route and prints rows, no database write. Do not run this unless a live test has been approved.
-9. `npm run sample` — samples routes in the local weekday rush windows and inserts into Supabase.
+2. Copy `.env.example` to `.env` and set `TOMTOM_API_KEY`. Never commit `.env`.
+3. `npm install`
+4. `npm run sample:dry` — prints the planned requests for the current local windows, no key required.
+5. `npm run sample -- --all --dry-run` — prints all 24 routes and ignores the windows, no API call.
+6. `npm run sample -- --ids=lv-westgate-airport,lv-airport-westgate --print-only` — calls TomTom only for the listed route ids and prints JSON, without writing CSV.
+7. `npm run sample` — samples routes in the local weekday rush windows and appends rows to `data/`.
 
 Flags:
 
-- `--dry-run` — print the plan; no API, no database.
+- `--dry-run` — print the plan; no API, no CSV write.
 - `--all` — ignore the weekday rush-hour windows (use for a one-off test).
 - `--ids=id1,id2` — sample only these route ids, ignoring the windows (use for a one-off test).
-- `--print-only` — call TomTom, print JSON, do not write to Supabase.
+- `--print-only` — call TomTom, print JSON, do not append to CSV.
 
-## Cron (recommended later)
+## Cron
 
-**GitHub Actions on a private repository** is the recommended host. A workflow can run `npm run sample` on `*/30 * * * *`. Store `TOMTOM_API_KEY`, `SUPABASE_URL`, and `SUPABASE_SERVICE_ROLE_KEY` as repository secrets. A template is in `.github/workflows/sample.yml`; do not push or enable it until you want collection to start.
+The workflow in `.github/workflows/sample.yml` runs the sampler on a 30-minute cadence during weekday rush hours, then commits any new CSV rows with `GITHUB_TOKEN` (`permissions: contents: write`). If no rows were written, the commit step is skipped. The only repository secret required is `TOMTOM_API_KEY`, added at [github.com/brianrobtsmith/loop-watch/settings/secrets/actions](https://github.com/brianrobtsmith/loop-watch/settings/secrets/actions). Actions must also be enabled for the repository, after which a `workflow_dispatch` run or the next scheduled slot will start collection.
 
-Supabase scheduled Edge Functions or Vercel cron are workable later. Vercel Hobby cron is a poor fit (too infrequent). Do not run this as a public API.
+GitHub cron is UTC and does not follow US daylight saving automatically. The schedule is therefore a UTC envelope that covers both standard and daylight time. The sampler still gates each city in its local timezone, so off-window runs do not call TomTom. In Eastern and Pacific terms:
+
+- **Morning (America/New_York and America/Los_Angeles):** every 30 minutes from 11:00–17:30 UTC, Monday–Friday. That covers Orlando 7:00–9:30 a.m. ET and Las Vegas 6:30–9:30 a.m. PT in both EDT/EST and PDT/PST, plus the 15-minute grace.
+- **Evening, first half:** every 30 minutes from 20:00–23:30 UTC, Monday–Friday, covering Orlando 4:00 p.m. ET onward in both DST modes.
+- **Evening, after midnight UTC:** every 30 minutes from 00:00–02:30 UTC, Tuesday–Saturday, covering Las Vegas 3:30–6:30 p.m. PT through the end of the window in PST (6:30 p.m. PT = 02:30 UTC).
+
+Nashville's 7:00–9:30 a.m. and 3:30–6:30 p.m. CT windows sit inside that same envelope.
+
+Manual runs: the workflow also has `workflow_dispatch`.
 
 
 
 ## Tunnel vs surface times (Westgate–Airport)
 
-There is no live public API for Loop trip times. Surface times come from the TomTom sampler on the Westgate–Airport pairs above. Tunnel times, once the new Paradise Road twin tunnels are open to the public, should be recorded as timed rides in `ride_logs` (see `sql/002_ride_logs.sql`). Until then, only published figures and a clearly labeled model are used. Do not invent wait, dwell, or running times.
+There is no live public API for Loop trip times. Surface times come from the TomTom sampler on the Westgate–Airport pairs above and are stored in `data/`. Tunnel times, once the new Paradise Road twin tunnels are open to the public, can be recorded as timed rides; `sql/002_ride_logs.sql` remains only as an optional schema reference. Until then, only published figures and a clearly labeled model are used. Do not invent wait, dwell, or running times.
 
 **Published figures (sourced, not measured by Loop Watch):**
 
@@ -110,11 +120,11 @@ Waiting for a ride and boarding are excluded on both sides.
 
 The comparison is assumed in-tunnel run plus the TomTom-sampled surface remainder on `lv-paradise4744-airport` / `lv-airport-paradise4744`, versus the live TomTom Westgate–Airport fastest and via-Paradise samples.
 
-**Ride log.** When the segment is open, record timed rides in `ride_logs` (`sql/002_ride_logs.sql`): wait, boarding, in-vehicle, alighting, and door-to-door, plus direction and mode (`tunnel` or `surface`). Compare those rows with TomTom `travel_samples` on the matching Westgate–Airport surface routes. The table is for manual entry; this repo does not create a Supabase project or a live Loop feed.
+**Ride log.** When the segment is open, timed rides can be recorded with wait, boarding, in-vehicle, alighting, and door-to-door, plus direction and mode (`tunnel` or `surface`), and compared with the TomTom CSV rows on the matching Westgate–Airport surface routes. `sql/002_ride_logs.sql` is an optional database schema only; this project does not use a hosted database.
 
 **Dashboard section.** The “Tunnel vs surface” section compares in-vehicle times only, for each direction:
 
-- Surface (TomTom sample): live travel time, free-flow time, TTI (`live / free-flow`), distance, and sample timestamp for Westgate–Airport fastest and via Paradise Road. Source: `travel_samples`.
+- Surface (TomTom sample): live travel time, free-flow time, TTI (`live / free-flow`), distance, and sample timestamp for Westgate–Airport fastest and via Paradise Road. Source: the public CSV files under `data/`.
 - Tunnel in-vehicle: the labeled Low / Mid / High in-tunnel run from `config/tunnel-assumptions.json`, plus the live TomTom surface leg on `lv-paradise4744-airport` / `lv-airport-paradise4744`. These run times are assumptions, not measurements. Once rides are logged, measured `ride_logs.in_vehicle_s` can be shown beside the model, never mixed without a label.
 - Waiting for a ride and boarding are excluded on both sides.
 - A note that Phase 2, as described in January 2026, is hybrid: tunnel to a station planned at 4744 Paradise Road, then surface to the airport, until a later on-airport station exists. The 2–8 minute company range is system-wide, not a Westgate–Airport measurement.
@@ -126,6 +136,6 @@ Keep sample-data and model labels visible. Do not present a 60 mph running-time 
 
 - Node 20+, TypeScript, `tsx`
 - TomTom Calculate Route v1, `traffic=true`, `computeTravelTimeFor=all`
-- Supabase Postgres (`travel_samples`)
+- Public CSV files under `data/YYYY-MM/`
 
 Research that led to this design is in `/workspace/boring-florida/traffic-tracker-research.md`.

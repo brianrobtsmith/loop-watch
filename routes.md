@@ -45,3 +45,5 @@ Machine-readable coordinates and source notes are in `routes.json`.
 **Types and roles.** *Tunnel* (`role: treated`) means an operating Loop could already be substituting for the surface trip (Vegas only). *Future Tunnel* (`role: baseline`) means collect now so a future before/after is possible: Nashville, Orlando, and the Westgate–Airport / Paradise Road segment in Las Vegas, where the new twin tunnels are not yet open to the public. *Rail* (`role: treated` in the rail comparison) means a road trip alongside a rail alternative. *Road-Only* (`role: control`) means a comparable corridor the Loop or rail line does not serve, used for difference-in-differences.
 
 **Timezones and rush-hour windows.** Las Vegas: `America/Los_Angeles`, weekdays 6:30–9:30 a.m. and 3:30–6:30 p.m. PT. Nashville: `America/Chicago`, weekdays 7:00–9:30 a.m. and 3:30–6:30 p.m. CT. Orlando: `America/New_York`, weekdays 7:00–9:30 a.m. and 4:00–6:30 p.m. ET. A 15-minute grace after each window end covers a late cron and is not an extra planned sample. Weekends are skipped.
+
+Sampled travel times are appended to public CSV files at `data/YYYY-MM/<metro>.csv`. See `data/README.md`.

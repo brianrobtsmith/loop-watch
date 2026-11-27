@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadRoutes } from "./lib/routes.ts";
-import { createSupabaseAdmin, insertSamples } from "./lib/supabase.ts";
+import { appendSamples } from "./lib/csv.ts";
 import { fetchTravelTime, redactedUrl } from "./lib/tomtom.ts";
 import type { CliOptions, Route, TravelSample } from "./lib/types.ts";
 import {
@@ -161,21 +161,22 @@ async function main(): Promise<void> {
     }
   }
 
-  const canWrite =
-    !options.printOnly &&
-    Boolean(process.env.SUPABASE_URL) &&
-    Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
-
-  if (!canWrite) {
+  if (options.printOnly) {
     console.log(JSON.stringify(samples, null, 2));
-    if (!options.printOnly) {
-      console.log(
-        "Supabase env not set; printed samples and skipped insert. Use --print-only to make that explicit.",
-      );
-    }
-  } else {
-    await insertSamples(createSupabaseAdmin(), samples);
-    console.log(`Inserted ${samples.length} sample(s) into travel_samples.`);
+  } else if (samples.length > 0) {
+    const paths = appendSamples(
+      samples.map((sample) => {
+        const route = selected.find((item) => item.id === sample.route_id);
+        if (!route) {
+          throw new Error(`Missing route for sample ${sample.route_id}`);
+        }
+        return { route, sample };
+      }),
+      at,
+    );
+    console.log(
+      `Appended ${samples.length} sample(s) to ${paths.map((path) => path.replace(/\\/g, "/")).join(", ")}.`,
+    );
   }
 
   if (failures.length > 0) {
